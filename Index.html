@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 🚀 ADVANCED SEO TITLE -->
+    <title>Vibes Studio - How to Download Instagram Reels, TikTok & Facebook Videos</title>
+    
+    <!-- 🚀 ADVANCED SEO DESCRIPTION -->
+    <meta name="description" content="Learn how to download Instagram reels, how to save TikTok videos without watermark, and how to create a video downloader website. Free online video saver in HD quality.">
+    
+    <!-- 🚀 POPULAR SEARCH KEYWORDS -->
+    <meta name="keywords" content="how to download instagram reels, how to save tiktok videos without watermark, how to create video downloader website, how to make reels downloader, how to download facebook videos online, how to save insta video in gallery, download private instagram videos, save tiktok video without save button, how to extract video from link, download hd videos free, best reels downloader app, online video saver, no watermark downloader, instagram video downloader, tiktok hd video download, facebook reels downloader, youtube video downloader, youtube to mp3">
+
+    <!-- 🌐 SOCIAL MEDIA SHARE PREVIEW -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="How to Download Reels & TikTok Videos - Vibes Studio">
+    <meta property="og:description" content="Learn how to download videos from TikTok, Instagram, and Facebook instantly in HD quality without watermark.">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body {
+            background-color: #050505; color: #f3f3f3; display: flex;
+            flex-direction: column; align-items: center; min-height: 100vh; padding: 20px;
+        }
+        
+        /* Header & Monogram */
+        .header { margin-top: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .brand-monogram {
+            font-family: 'Cinzel', serif; font-size: 3.5rem; font-weight: 900;
+            background: linear-gradient(135deg, #fff 10%, #fcf6ba 40%, #bf953f 70%, #aa771c 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 25px rgba(191, 149, 63, 0.7), 0 0 50px rgba(191, 149, 63, 0.4);
+            margin-bottom: 5px; letter-spacing: 4px;
+        }
+        .header h1 {
+            font-family: 'Cinzel', serif; font-size: 2.5rem;
+            background: linear-gradient(135deg, #fff 20%, #bf953f 50%, #fbf5b7 80%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px;
+        }
+        .header p { color: #bfa15f; font-size: 1rem; }
+
+        /* Pro Tip Banner */
+        .pro-tip {
+            width: 100%; max-width: 620px; background: rgba(191, 149, 63, 0.1);
+            border: 1px solid rgba(191, 149, 63, 0.3); padding: 10px 15px;
+            border-radius: 8px; color: #bf953f; font-size: 0.85rem; text-align: center;
+            margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+
+        /* Containers */
+        .container, .review-box, .faq-section {
+            background: #111111; padding: 25px; border-radius: 18px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9); border: 1px solid rgba(191, 149, 63, 0.4);
+            width: 100%; max-width: 620px; margin-top: 20px;
+        }
+        
+        .section-title {
+            font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 700;
+            background: linear-gradient(135deg, #fff 10%, #fcf6ba 40%, #bf953f 80%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 15px; letter-spacing: 1.2px; text-transform: uppercase;
+        }
+
+        /* Inputs & Buttons */
+        .input-group { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; }
+        .input-group input, .review-form input, .review-form textarea {
+            padding: 15px; border-radius: 10px; border: 1px solid rgba(191, 149, 63, 0.5);
+            background: #1a1a1a; color: #fff; font-size: 1rem; outline: none; width: 100%; transition: 0.3s;
+        }
+        .input-group input:focus, .review-form textarea:focus {
+            border-color: #bf953f; box-shadow: 0 0 12px rgba(191, 149, 63, 0.6);
+        }
+        
+        .btn-row { display: flex; gap: 12px; }
+        .btn {
+            flex: 1; padding: 15px; border-radius: 10px; border: none; font-size: 1rem;
+            font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-align: center;
+        }
+        .btn-preview { background: #1a1a1a; color: #bf953f; border: 1px solid rgba(191, 149, 63, 0.5); }
+        .btn-preview:hover { background: #262626; }
+        .btn-download {
+            background: linear-gradient(135deg, #bf953f, #aa771c); color: #050505;
+            font-weight: 700; box-shadow: 0 4px 15px rgba(191, 149, 63, 0.4);
+        }
+        .btn-download:hover { opacity: 0.9; transform: translateY(-1px); }
+        
+        /* Loading Spinner */
+        .loader {
+            display: none; border: 4px solid #222; border-top: 4px solid #bf953f;
+            border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Video Preview Box */
+        .preview-box {
+            display: none; margin-top: 20px; background: #080808; padding: 18px;
+            border-radius: 12px; border: 1px dashed rgba(191, 149, 63, 0.6); text-align: center;
+        }
+        .video-card-preview { margin-top: 12px; background: #151515; padding: 12px; border-radius: 8px; }
+        .thumbnail-placeholder {
+            width: 100%; height: 180px; background: #222; border-radius: 6px;
+            display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+            border: 1px solid rgba(191, 149, 63, 0.3);
+        }
+        .thumbnail-placeholder img { width: 100%; height: 100%; object-fit: cover; }
+        .play-icon-btn {
+            position: absolute; width: 50px; height: 50px; background: linear-gradient(135deg, #bf953f, #aa771c);
+            color: #050505; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; box-shadow: 0 0 15px rgba(191, 149, 63, 0.8);
+        }
+        .video-info-desc { margin-top: 10px; text-align: left; }
+        .video-info-desc h4 { color: #f3f3f3; font-size: 1rem; margin-bottom: 4px; }
+        .video-info-desc p { color: #aaa; font-size: 0.85rem; }
+
+        /* 🚀 Download Options (SD, HD, MP3) */
+        .download-options {
+            display: none; margin-top: 15px; padding-top: 15px;
+            border-top: 1px solid rgba(191, 149, 63, 0.2); text-align: left;
+        }
+        .download-options h5 {
+            color: #bf953f; font-size: 0.9rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .option-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .opt-btn {
+            background: #1a1a1a; border: 1px solid rgba(191, 149, 63, 0.4); color: #fff;
+            padding: 12px 5px; border-radius: 8px; cursor: pointer; text-align: center;
+            transition: 0.3s; font-size: 0.9rem; font-weight: 600;
+        }
+        .opt-btn span { display: block; font-size: 0.7rem; color: #aaa; font-weight: 400; margin-top: 3px; }
+        .opt-btn:hover { background: #bf953f; color: #000; border-color: #bf953f; }
+        .opt-btn:hover span { color: #000; }
+        .opt-btn.mp3-btn { border-color: #555; }
+        .opt-btn.mp3-btn:hover { background: #fff; color: #000; }
+
+        /* Reviews & FAQ */
+        .review-form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+        .review-card {
+            background: #181818; padding: 14px; border-radius: 10px;
+            margin-bottom: 12px; border-left: 3px solid #bf953f;
+        }
+        .review-card h4 { font-size: 0.95rem; color: #bf953f; }
+        .review-card p { font-size: 0.85rem; color: #ccc; margin-top: 5px; }
+        .faq-item { margin-bottom: 15px; }
+        .faq-item h4 { font-size: 1rem; color: #e5e5e5; margin-bottom: 6px; }
+        .faq-item p { font-size: 0.9rem; color: #aaa; }
+
+        /* Mobile Responsive */
+        @media (max-width: 450px) {
+            .header h1 { font-size: 2rem; }
+            .btn-row { flex-direction: column; gap: 10px; }
+            .btn { width: 100%; padding: 12px; }
+            .pro-tip { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="brand-monogram">VS</div>
+        <h1>Vibes Studio</h1>
+        <p>The Ultimate Luxury All-in-One Video & Reels Downloader</p>
+    </div>
+
+    <!-- 🔥 Top Pro Tip (English) -->
+    <div class="pro-tip">
+        <span>✨</span> <span>Pro Tip: Download TikTok videos without any watermark!</span>
+    </div>
+
+    <!-- Main Downloader -->
+    <div class="container">
+        <h2 class="section-title">Paste Link & Download</h2>
+        <p style="font-size: 0.9rem; color: #aaa;">Support YouTube, TikTok, Instagram, Facebook & more.</p>
+        
+        <div class="input-group">
+            <input type="text" id="videoLink" placeholder="Paste video link here...">
+            
+            <div class="btn-row">
+                <button type="button" class="btn btn-preview" onclick="fetchVideoData()">Preview / Play</button>
+                <button type="button" class="btn btn-download" onclick="startDownloadProcess()">Download Now</button>
+            </div>
+        </div>
+
+        <!-- Loader -->
+        <div id="loadingSpinner" class="loader"></div>
+
+        <!-- Video Preview -->
+        <div id="previewContainer" class="preview-box">
+            <div class="video-card-preview">
+                <div class="thumbnail-placeholder" id="thumbContainer">
+                    <span id="thumbText">[ Video Thumbnail ]</span>
+                    <div class="play-icon-btn">▶</div>
+                </div>
+                <div class="video-info-desc">
+                    <h4 id="videoTitleDisplay">Video Title</h4>
+                    <p id="videoMetaDisplay">Fetching details...</p>
+                </div>
+
+                <!-- 🚀 SD, HD, MP3 BUTTONS -->
+                <div class="download-options" id="downloadOptions">
+                    <h5>Select Download Quality:</h5>
+                    <div class="option-grid">
+                        <button class="opt-btn" onclick="triggerDownload('SD')">SD <span>360p / 480p</span></button>
+                        <button class="opt-btn" onclick="triggerDownload('HD')">HD <span>720p / 1080p</span></button>
+                        <button class="opt-btn mp3-btn" onclick="triggerDownload('MP3')">MP3 <span>Audio Only</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔥 Bottom Pro Tip (English) -->
+    <div class="pro-tip">
+        <span>⚡</span> <span>Lightning fast download speed in HD quality (No App Required)</span>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="review-box">
+        <h3 class="section-title">User Reviews & Feedback</h3>
+        <div class="review-form">
+            <input type="text" id="reviewName" placeholder="Your Name">
+            <textarea id="userMessage" rows="2" placeholder="Write your review..."></textarea>
+            <button type="button" class="btn btn-download" onclick="submitReview()">Submit Review</button>
+        </div>
+        <div id="reviewsList">
+            <div class="review-card">
+                <h4>Alex Smith ⭐⭐⭐⭐⭐</h4>
+                <p>Absolute luxury experience! Downloaded my Instagram reels instantly.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SEO & Guide / FAQ Section -->
+    <div class="faq-section">
+        <h3 class="section-title">How to Download Videos (FAQ)</h3>
+        
+        <div class="faq-item">
+            <h4>How to download Instagram reels online?</h4>
+            <p>Copy the Instagram reel link, paste it into the input box above, click preview to check, and download it instantly in HD quality without any app.</p>
+        </div>
+
+        <div class="faq-item">
+            <h4>How to save TikTok videos without watermark?</h4>
+            <p>Use Vibes Studio to easily extract and download clean TikTok videos without any watermark directly to your mobile gallery.</p>
+        </div>
+
+        <div class="faq-item">
+            <h4>How to download Facebook videos in mobile gallery?</h4>
+            <p>Paste any public Facebook video or reel link into our tool to convert and download media files quickly and securely.</p>
+        </div>
+
+        <div class="faq-item">
+            <h4>How to create a video downloader website?</h4>
+            <p>If you want to make your own downloader, you need HTML/CSS for the design and an API for fetching video links. Vibes Studio is a perfect example of a modern downloader UI.</p>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() { loadReviews(); };
+
+        // --- 1. VIDEO FETCHING & SHOWING OPTIONS ---
+        function fetchVideoData() {
+            var link = document.getElementById('videoLink').value;
+            if(!link) { alert('Please paste a video link first!'); return; }
+
+            document.getElementById('loadingSpinner').style.display = 'block';
+            document.getElementById('previewContainer').style.display = 'none';
+
+            fetch('https://noembed.com/embed?url=' + encodeURIComponent(link))
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                    var previewBox = document.getElementById('previewContainer');
+                    var optionsBox = document.getElementById('downloadOptions');
+                    
+                    previewBox.style.display = 'block';
+                    optionsBox.style.display = 'block';
+
+                    if(data.title) {
+                        document.getElementById('videoTitleDisplay').innerText = data.title;
+                        document.getElementById('videoMetaDisplay').innerText = "Source: " + (data.provider_name || "Social Media") + " • Available in SD, HD & MP3";
+                        
+                        if(data.thumbnail_url) {
+                            document.getElementById('thumbContainer').innerHTML = `
+                                <img src="${data.thumbnail_url}" alt="Thumbnail">
+                                <div class="play-icon-btn">▶</div>
+                            `;
+                        } else {
+                            document.getElementById('thumbContainer').innerHTML = `<span>Thumbnail Not Available</span>`;
+                        }
+                    } else {
+                        document.getElementById('videoTitleDisplay').innerText = "Video Link Detected!";
+                        document.getElementById('videoMetaDisplay').innerText = "Select your preferred download format below.";
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                    var previewBox = document.getElementById('previewContainer');
+                    previewBox.style.display = 'block';
+                    document.getElementById('downloadOptions').style.display = 'block';
+                    document.getElementById('videoTitleDisplay').innerText = "Video Ready!";
+                    document.getElementById('videoMetaDisplay').innerText = "API details could not fetch, but you can download.";
+                });
+        }
+
+        // --- 2. DOWNLOAD BUTTON WITH AD TIMER LOGIC ---
+        function triggerDownload(quality) {
+            var link = document.getElementById('videoLink').value;
+            if(!link) { alert('Link missing!'); return; }
+
+            // Yahan aap apna REAL Ad link daal sakte hain (Baad mein)
+            var adLink = "https://your-ad-link.com"; 
+            // window.open(adLink, '_blank'); 
+
+            var timeLeft = 5;
+            var timer = setInterval(function() {
+                if(timeLeft > 0) {
+                    console.log("Downloading " + quality + " in " + timeLeft + "s (Ad playing...)");
+                    timeLeft--;
+                } else {
+                    clearInterval(timer);
+                    // Backend lagne ke baad yahan asli file download hogi:
+                    // window.location.href = "api/download.php?url=" + link + "&quality=" + quality;
+                    
+                    alert('✅ ' + quality + ' Download Started!\n\n(Note: Design ready hai. Asli download ke liye Backend API connect karni hogi.)');
+                }
+            }, 1000);
+        }
+
+        // --- 3. MAIN DOWNLOAD BUTTON (Top wala) ---
+        function startDownloadProcess() {
+            var link = document.getElementById('videoLink').value;
+            if(!link) { alert('Please paste a video link first!'); return; }
+            
+            fetchVideoData(); 
+            
+            setTimeout(function() {
+                var previewBox = document.getElementById('previewContainer');
+                if(previewBox.style.display === 'block') {
+                    alert('Video fetched! Please select SD, HD or MP3 below.');
+                }
+            }, 1500);
+        }
+
+        // --- 4. REVIEWS LOGIC (LocalStorage) ---
+        function submitReview() {
+            var nameInput = document.getElementById('reviewName').value;
+            var msg = document.getElementById('userMessage').value;
+            if(!nameInput || !msg) { alert('Please fill in both fields!'); return; }
+
+            var newReview = { name: nameInput, message: msg };
+            addReviewToDOM(newReview);
+            saveReviewToStorage(newReview);
+            
+            document.getElementById('reviewName').value = '';
+            document.getElementById('userMessage').value = '';
+        }
+
+        function addReviewToDOM(review) {
+            var list = document.getElementById('reviewsList');
+            var newCard = document.createElement('div');
+            newCard.className = 'review-card';
+            newCard.innerHTML = '<h4>' + escapeHTML(review.name) + ' ⭐⭐⭐⭐⭐</h4><p>' + escapeHTML(review.message) + '</p>';
+            list.prepend(newCard);
+        }
+
+        function saveReviewToStorage(review) {
+            var reviews = JSON.parse(localStorage.getItem('vsReviews')) || [];
+            reviews.unshift(review);
+            localStorage.setItem('vsReviews', JSON.stringify(reviews));
+        }
+
+        function loadReviews() {
+            var reviews = JSON.parse(localStorage.getItem('vsReviews')) || [];
+            reviews.forEach(review => { addReviewToDOM(review); });
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+        }
+    </script>
+</body>
+</html>
