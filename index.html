@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibes Studio - All-in-One Video Downloader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: #050505; color: #f3f3f3; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        
+        /* Header & Monogram */
+        .header { margin-top: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .brand-monogram {
+            font-family: 'Cinzel', serif; font-size: 3.5rem; font-weight: 900;
+            background: linear-gradient(135deg, #fff 10%, #fcf6ba 40%, #bf953f 70%, #aa771c 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 25px rgba(191, 149, 63, 0.7), 0 0 50px rgba(191, 149, 63, 0.4);
+            margin-bottom: 5px; letter-spacing: 4px;
+        }
+        .header h1 {
+            font-family: 'Cinzel', serif; font-size: 2.5rem;
+            background: linear-gradient(135deg, #fff 20%, #bf953f 50%, #fbf5b7 80%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px;
+        }
+        .header p { color: #bfa15f; font-size: 1rem; }
+
+        .pro-tip {
+            width: 100%; max-width: 620px; background: rgba(191, 149, 63, 0.1);
+            border: 1px solid rgba(191, 149, 63, 0.3); padding: 10px 15px;
+            border-radius: 8px; color: #bf953f; font-size: 0.85rem; text-align: center;
+            margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+
+        .container, .faq-section {
+            background: #111111; padding: 25px; border-radius: 18px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9); border: 1px solid rgba(191, 149, 63, 0.4);
+            width: 100%; max-width: 620px; margin-top: 20px;
+        }
+        
+        .section-title {
+            font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 700;
+            background: linear-gradient(135deg, #fff 10%, #fcf6ba 40%, #bf953f 80%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 15px; letter-spacing: 1.2px; text-transform: uppercase;
+        }
+
+        .input-group { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; }
+        .input-group input {
+            padding: 15px; border-radius: 10px; border: 1px solid rgba(191, 149, 63, 0.5);
+            background: #1a1a1a; color: #fff; font-size: 1rem; outline: none; width: 100%; transition: 0.3s;
+        }
+        
+        .btn-row { display: flex; gap: 12px; }
+        .btn {
+            flex: 1; padding: 15px; border-radius: 10px; border: none; font-size: 1rem;
+            font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-align: center;
+        }
+        .btn-preview { background: #1a1a1a; color: #bf953f; border: 1px solid rgba(191, 149, 63, 0.5); }
+        .btn-download {
+            background: linear-gradient(135deg, #bf953f, #aa771c); color: #050505;
+            font-weight: 700; box-shadow: 0 4px 15px rgba(191, 149, 63, 0.4);
+        }
+        
+        .loader {
+            display: none; border: 4px solid #222; border-top: 4px solid #bf953f;
+            border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .preview-box {
+            display: none; margin-top: 20px; background: #080808; padding: 18px;
+            border-radius: 12px; border: 1px dashed rgba(191, 149, 63, 0.6); text-align: center;
+        }
+        .video-card-preview { margin-top: 12px; background: #151515; padding: 12px; border-radius: 8px; }
+        .thumbnail-placeholder {
+            width: 100%; height: 180px; background: #222; border-radius: 6px;
+            display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+            border: 1px solid rgba(191, 149, 63, 0.3);
+        }
+        .thumbnail-placeholder img { width: 100%; height: 100%; object-fit: cover; }
+        .video-info-desc { margin-top: 10px; text-align: left; }
+        .video-info-desc h4 { color: #f3f3f3; font-size: 1rem; margin-bottom: 4px; }
+        .video-info-desc p { color: #aaa; font-size: 0.85rem; }
+
+        .download-options {
+            display: none; margin-top: 15px; padding-top: 15px;
+            border-top: 1px solid rgba(191, 149, 63, 0.2); text-align: left;
+        }
+        .download-options h5 { color: #bf953f; font-size: 0.9rem; margin-bottom: 10px; }
+        .option-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .opt-btn {
+            background: #1a1a1a; border: 1px solid rgba(191, 149, 63, 0.4); color: #fff;
+            padding: 12px 5px; border-radius: 8px; cursor: pointer; text-align: center;
+            transition: 0.3s; font-size: 0.9rem; font-weight: 600;
+        }
+        .opt-btn span { display: block; font-size: 0.7rem; color: #aaa; font-weight: 400; margin-top: 3px; }
+        .opt-btn:hover { background: #bf953f; color: #000; border-color: #bf953f; }
+        .opt-btn:hover span { color: #000; }
+
+        .faq-item { margin-bottom: 15px; }
+        .faq-item h4 { font-size: 1rem; color: #e5e5e5; margin-bottom: 6px; }
+        .faq-item p { font-size: 0.9rem; color: #aaa; }
+
+        @media (max-width: 450px) {
+            .header h1 { font-size: 2rem; }
+            .btn-row { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="brand-monogram">VS</div>
+        <h1>Vibes Studio</h1>
+        <p>The Ultimate Luxury All-in-One Video & Reels Downloader</p>
+    </div>
+
+    <div class="container">
+        <h2 class="section-title">Paste Link & Download</h2>
+        <p style="font-size: 0.9rem; color: #aaa;">Support YouTube, TikTok, Instagram, Facebook & more.</p>
+        
+        <div class="input-group">
+            <input type="text" id="videoLink" placeholder="Paste any video link here...">
+            <div class="btn-row">
+                <button type="button" class="btn btn-preview" onclick="fetchVideoData()">Preview / Play</button>
+                <button type="button" class="btn btn-download" onclick="fetchVideoData()">Download Now</button>
+            </div>
+        </div>
+
+        <div id="loadingSpinner" class="loader"></div>
+
+        <div id="previewContainer" class="preview-box">
+            <div class="video-card-preview">
+                <div class="thumbnail-placeholder" id="thumbContainer">
+                    <span id="thumbText">[ Video Thumbnail ]</span>
+                </div>
+                <div class="video-info-desc">
+                    <h4 id="videoTitleDisplay">Video Title</h4>
+                    <p id="videoMetaDisplay">Fetching details...</p>
+                </div>
+
+                <div class="download-options" id="downloadOptions">
+                    <h5>Select Download Quality:</h5>
+                    <div class="option-grid">
+                        <button class="opt-btn" onclick="downloadVideo('SD', this)">SD <span>Video</span></button>
+                        <button class="opt-btn" onclick="downloadVideo('HD', this)">HD <span>Video</span></button>
+                        <button class="opt-btn" onclick="downloadVideo('MP3', this)">MP3 <span>Audio Only</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Free Unified API (Supports 16+ platforms)
+        const API_BASE = 'https://btch-downloader-api-green.vercel.app/api';
+        let downloadUrls = {};
+
+        function fetchVideoData() {
+            const link = document.getElementById('videoLink').value.trim();
+            if (!link) { alert('Please paste a video link first!'); return; }
+
+            document.getElementById('loadingSpinner').style.display = 'block';
+            document.getElementById('previewContainer').style.display = 'none';
+
+            // Auto-detect platform using the 'aio' (All-in-One) endpoint
+            const apiUrl = `${API_BASE}/download/aio?url=${encodeURIComponent(link)}`;
+
+            fetch(apiUrl)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                    const previewBox = document.getElementById('previewContainer');
+                    const optionsBox = document.getElementById('downloadOptions');
+                    previewBox.style.display = 'block';
+                    optionsBox.style.display = 'block';
+
+                    const extracted = extractMediaInfo(data);
+                    if (extracted) {
+                        document.getElementById('videoTitleDisplay').innerText = extracted.title || 'Video Detected';
+                        document.getElementById('videoMetaDisplay').innerText = `Source: ${extracted.platform || 'Social Media'} • Ready to download`;
+
+                        if (extracted.thumbnail) {
+                            document.getElementById('thumbContainer').innerHTML = `
+                                <img src="${extracted.thumbnail}" alt="Thumbnail">
+                                <div class="play-icon-btn">▶</div>
+                            `;
+                        }
+
+                        // Save URLs for download buttons
+                        downloadUrls = {
+                            sd: extracted.video || extracted.sd,
+                            hd: extracted.video || extracted.hd,
+                            mp3: extracted.audio || extracted.mp3 || extracted.video
+                        };
+                    } else {
+                        alert('Could not extract media info. Please check the link or try another platform.');
+                    }
+                })
+                .catch(err => {
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                    alert('Error connecting to server. Please try again later.');
+                });
+        }
+
+        // Intelligent parser to find title, thumbnail, and video URLs from any API response
+        function extractMediaInfo(data) {
+            function findValueByKeys(obj, keys) {
+                for (let k in obj) {
+                    if (keys.includes(k.toLowerCase()) && typeof obj[k] === 'string' && obj[k].startsWith('http')) {
+                        return obj[k];
+                    }
+                    if (typeof obj[k] === 'object') {
+                        const res = findValueByKeys(obj[k], keys);
+                        if (res) return res;
+                    }
+                }
+                return null;
+            }
+
+            function findAnyVideoUrl(obj) {
+                for (let k in obj) {
+                    if (typeof obj[k] === 'string' && obj[k].startsWith('http') && (obj[k].includes('.mp4') || obj[k].includes('.m3u8') || obj[k].includes('.webm'))) {
+                        return obj[k];
+                    }
+                    if (typeof obj[k] === 'object') {
+                        const res = findAnyVideoUrl(obj[k]);
+                        if (res) return res;
+                    }
+                }
+                return null;
+            }
+
+            const title = findValueByKeys(data, ['title', 'desc', 'description', 'caption']) || 'Video Detected';
+            const thumbnail = findValueByKeys(data, ['thumbnail', 'thumb', 'cover', 'image']) || null;
+            const platform = findValueByKeys(data, ['platform', 'source', 'host']) || 'Social Media';
+
+            let videoUrl = findValueByKeys(data, ['url', 'download', 'link', 'video', 'play']) || findAnyVideoUrl(data);
+            let audioUrl = findValueByKeys(data, ['audio', 'music', 'mp3', 'sound']) || videoUrl;
+
+            return {
+                title,
+                thumbnail,
+                platform,
+                video: videoUrl,
+                audio: audioUrl
+            };
+        }
+
+        function downloadVideo(quality, btn) {
+            const url = downloadUrls[quality.toLowerCase()];
+            if (!url) {
+                alert('Download link not available. Please try again.');
+                return;
+            }
+
+            // Ad Timer (3 Seconds)
+            let timeLeft = 3;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `Please wait ${timeLeft}s...`;
+            btn.disabled = true;
+
+            const timer = setInterval(() => {
+                timeLeft--;
+                btn.innerHTML = `Please wait ${timeLeft}s...`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+
+                    // Trigger Download
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.target = '_blank';
+                    a.download = quality === 'MP3' ? 'audio.mp3' : 'video.mp4';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+
+                    if (quality === 'MP3') {
+                        window.open(url, '_blank');
+                    }
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
