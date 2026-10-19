@@ -1,0 +1,141 @@
+<script>
+    // Free Unified API (Supports 16+ platforms)
+    const API_BASE = 'https://btch-downloader-api-green.vercel.app/api';
+    let downloadUrls = {};
+
+    function fetchVideoData() {
+        const link = document.getElementById('videoLink').value.trim();
+        if (!link) { alert('Please paste a video link first!'); return; }
+
+        document.getElementById('loadingSpinner').style.display = 'block';
+        document.getElementById('previewContainer').style.display = 'none';
+
+        // Auto-detect platform using the 'aio' (All-in-One) endpoint
+        const apiUrl = `${API_BASE}/download/aio?url=${encodeURIComponent(link)}`;
+
+        fetch(apiUrl)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('loadingSpinner').style.display = 'none';
+                const previewBox = document.getElementById('previewContainer');
+                const optionsBox = document.getElementById('downloadOptions');
+                
+                // Debugging: Console mein dekhein API kya response de rahi hai
+                console.log("API Response:", data);
+
+                const extracted = extractMediaInfo(data);
+                
+                if (extracted && extracted.video) {
+                    previewBox.style.display = 'block';
+                    optionsBox.style.display = 'block';
+
+                    document.getElementById('videoTitleDisplay').innerText = extracted.title || 'Video Detected';
+                    document.getElementById('videoMetaDisplay').innerText = `Source: ${extracted.platform || 'Social Media'} • Ready to download`;
+
+                    if (extracted.thumbnail) {
+                        document.getElementById('thumbContainer').innerHTML = `
+                            <img src="${extracted.thumbnail}" alt="Thumbnail">
+                            <div class="play-icon-btn">▶</div>
+                        `;
+                    } else {
+                        document.getElementById('thumbContainer').innerHTML = `<span>[ Thumbnail Not Available ]</span>`;
+                    }
+
+                    // Save URLs for download buttons
+                    downloadUrls = {
+                        sd: extracted.video,
+                        hd: extracted.video,
+                        mp3: extracted.audio || extracted.video
+                    };
+                } else {
+                    alert('API se link nahi mila. Please koi aur link try karein ya thodi der baad koshish karein.');
+                }
+            })
+            .catch(err => {
+                document.getElementById('loadingSpinner').style.display = 'none';
+                console.error(err);
+                alert('Server se connect nahi ho paya. Internet check karein ya API down hai.');
+            });
+    }
+
+    // 🚀 Super Smart Parser (Har platform ka data dhoond kar nikal lega)
+    function extractMediaInfo(data) {
+        let title = 'Video Detected';
+        let thumbnail = null;
+        let platform = 'Social Media';
+        let videoUrl = null;
+        let audioUrl = null;
+
+        // Data ko string mein convert karke check karte hain (TikTok/Insta arrays ke liye)
+        const stringData = JSON.stringify(data);
+
+        // 1. Title/Desc dhoondein
+        const titleMatch = stringData.match(/"(?:title|desc|caption|description)"\s*:\s*"([^"]+)"/i);
+        if (titleMatch) title = titleMatch[1];
+
+        // 2. Thumbnail/Cover dhoondein
+        const thumbMatch = stringData.match(/"(?:thumbnail|cover|origin_cover|image)"\s*:\s*"([^"]+)"/i);
+        if (thumbMatch) thumbnail = thumbMatch[1].replace(/\\/g, '');
+
+        // 3. Video URL dhoondein (mp4)
+        const videoMatch = stringData.match(/"([^"]+\.mp4[^"]*)"/i);
+        if (videoMatch) videoUrl = videoMatch[1].replace(/\\/g, '');
+
+        // 4. Audio URL dhoondein (mp3)
+        const audioMatch = stringData.match(/"([^"]+\.mp3[^"]*)"/i);
+        if (audioMatch) audioUrl = audioMatch[1].replace(/\\/g, '');
+
+        // Platform detect karein
+        if (stringData.includes('tiktok')) platform = 'TikTok';
+        else if (stringData.includes('youtube')) platform = 'YouTube';
+        else if (stringData.includes('instagram')) platform = 'Instagram';
+        else if (stringData.includes('facebook')) platform = 'Facebook';
+
+        // Agar video URL seedha nahi mila, toh fallback (purana tareeqa)
+        if (!videoUrl) {
+            function findAnyVideoUrl(obj) {
+                for (let k in obj) {
+                    if (typeof obj[k] === 'string' && obj[k].startsWith('http') && (obj[k].includes('.mp4') || obj[k].includes('video'))) {
+                        return obj[k];
+                    }
+                    if (typeof obj[k] === 'object' && obj[k] !== null) {
+                        const res = findAnyVideoUrl(obj[k]);
+                        if (res) return res;
+                    }
+                }
+                return null;
+            }
+            videoUrl = findAnyVideoUrl(data);
+        }
+
+        return { title, thumbnail, platform, video: videoUrl, audio: audioUrl || videoUrl };
+    }
+
+    function downloadVideo(quality, btn) {
+        const url = downloadUrls[quality.toLowerCase()];
+        if (!url) {
+            alert('Download link not available for this quality. Please try again.');
+            return;
+        }
+
+        // Ad Timer (3 Seconds)
+        let timeLeft = 3;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = `Wait ${timeLeft}s...`;
+        btn.disabled = true;
+
+        const timer = setInterval(() => {
+            timeLeft--;
+            btn.innerHTML = `Wait ${timeLeft}s...`;
+            
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+
+                // Trigger Download (Naye tab mein)
+                window.open(url, '_blank');
+            }
+        }, 1000);
+    }
+</script>
