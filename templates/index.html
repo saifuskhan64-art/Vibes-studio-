@@ -167,7 +167,7 @@
         <p>The Ultimate Luxury All-in-One Video & Reels Downloader</p>
     </div>
 
-    <!-- 🔥 Top Pro Tip (English) -->
+    <!-- 🔥 Top Pro Tip -->
     <div class="pro-tip">
         <span>✨</span> <span>Pro Tip: Download TikTok videos without any watermark!</span>
     </div>
@@ -214,7 +214,7 @@
         </div>
     </div>
 
-    <!-- 🔥 Bottom Pro Tip (English) -->
+    <!-- 🔥 Bottom Pro Tip -->
     <div class="pro-tip">
         <span>⚡</span> <span>Lightning fast download speed in HD quality (No App Required)</span>
     </div>
@@ -271,80 +271,58 @@
             document.getElementById('loadingSpinner').style.display = 'block';
             document.getElementById('previewContainer').style.display = 'none';
 
-            fetch('https://noembed.com/embed?url=' + encodeURIComponent(link))
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('loadingSpinner').style.display = 'none';
-                    var previewBox = document.getElementById('previewContainer');
-                    var optionsBox = document.getElementById('downloadOptions');
-                    
-                    previewBox.style.display = 'block';
-                    optionsBox.style.display = 'block';
+            fetch('/process-video', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: link })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loadingSpinner').style.display = 'none';
+                var previewBox = document.getElementById('previewContainer');
+                var optionsBox = document.getElementById('downloadOptions');
+                
+                previewBox.style.display = 'block';
+                optionsBox.style.display = 'block';
 
-                    if(data.title) {
-                        document.getElementById('videoTitleDisplay').innerText = data.title;
-                        document.getElementById('videoMetaDisplay').innerText = "Source: " + (data.provider_name || "Social Media") + " • Available in SD, HD & MP3";
-                        
-                        if(data.thumbnail_url) {
-                            document.getElementById('thumbContainer').innerHTML = `
-                                <img src="${data.thumbnail_url}" alt="Thumbnail">
-                                <div class="play-icon-btn">▶</div>
-                            `;
-                        } else {
-                            document.getElementById('thumbContainer').innerHTML = `<span>Thumbnail Not Available</span>`;
-                        }
+                if(data.title) {
+                    document.getElementById('videoTitleDisplay').innerText = data.title;
+                    document.getElementById('videoMetaDisplay').innerText = "Source: " + (data.provider_name || "Social Media") + " • Available in SD, HD & MP3";
+                    
+                    if(data.thumbnail) {
+                        document.getElementById('thumbContainer').innerHTML = `
+                            <img src="${data.thumbnail}" alt="Thumbnail">
+                            <div class="play-icon-btn">▶</div>
+                        `;
                     } else {
-                        document.getElementById('videoTitleDisplay').innerText = "Video Link Detected!";
-                        document.getElementById('videoMetaDisplay').innerText = "Select your preferred download format below.";
+                        document.getElementById('thumbContainer').innerHTML = `<span>Thumbnail Not Available</span>`;
                     }
-                })
-                .catch(error => {
-                    document.getElementById('loadingSpinner').style.display = 'none';
-                    var previewBox = document.getElementById('previewContainer');
-                    previewBox.style.display = 'block';
-                    document.getElementById('downloadOptions').style.display = 'block';
-                    document.getElementById('videoTitleDisplay').innerText = "Video Ready!";
-                    document.getElementById('videoMetaDisplay').innerText = "API details could not fetch, but you can download.";
-                });
+                }
+            })
+            .catch(error => {
+                document.getElementById('loadingSpinner').style.display = 'none';
+                var previewBox = document.getElementById('previewContainer');
+                previewBox.style.display = 'block';
+                document.getElementById('downloadOptions').style.display = 'block';
+                document.getElementById('videoTitleDisplay').innerText = "Video Ready!";
+                document.getElementById('videoMetaDisplay').innerText = "Select your preferred format below.";
+            });
         }
 
-        // --- 2. DOWNLOAD BUTTON WITH AD TIMER LOGIC ---
+        // --- 2. DOWNLOAD BUTTON LOGIC ---
         function triggerDownload(quality) {
             var link = document.getElementById('videoLink').value;
             if(!link) { alert('Link missing!'); return; }
 
-            // Yahan aap apna REAL Ad link daal sakte hain (Baad mein)
-            var adLink = "https://your-ad-link.com"; 
-            // window.open(adLink, '_blank'); 
-
-            var timeLeft = 5;
-            var timer = setInterval(function() {
-                if(timeLeft > 0) {
-                    console.log("Downloading " + quality + " in " + timeLeft + "s (Ad playing...)");
-                    timeLeft--;
-                } else {
-                    clearInterval(timer);
-                    // Backend lagne ke baad yahan asli file download hogi:
-                    // window.location.href = "api/download.php?url=" + link + "&quality=" + quality;
-                    
-                    alert('✅ ' + quality + ' Download Started!\n\n(Note: Design ready hai. Asli download ke liye Backend API connect karni hogi.)');
-                }
-            }, 1000);
+            alert('✅ ' + quality + ' Download started! Your file will be processed shortly.');
+            window.location.href = '/download?url=' + encodeURIComponent(link) + '&quality=' + quality;
         }
 
-        // --- 3. MAIN DOWNLOAD BUTTON (Top wala) ---
+        // --- 3. MAIN DOWNLOAD BUTTON ---
         function startDownloadProcess() {
             var link = document.getElementById('videoLink').value;
             if(!link) { alert('Please paste a video link first!'); return; }
-            
             fetchVideoData(); 
-            
-            setTimeout(function() {
-                var previewBox = document.getElementById('previewContainer');
-                if(previewBox.style.display === 'block') {
-                    alert('Video fetched! Please select SD, HD or MP3 below.');
-                }
-            }, 1500);
         }
 
         // --- 4. REVIEWS LOGIC (LocalStorage) ---
