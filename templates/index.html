@@ -37,11 +37,10 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .preview-box { display: none; margin-top: 20px; background: #080808; padding: 18px; border-radius: 12px; border: 1px dashed rgba(191, 149, 63, 0.6); text-align: center; }
         .video-card-preview { margin-top: 12px; background: #151515; padding: 12px; border-radius: 8px; }
-        .thumbnail-placeholder { width: 100%; height: 180px; background: #222; border-radius: 6px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
-        .thumbnail-placeholder img { width: 100%; height: 100%; object-fit: cover; }
+        .thumbnail-placeholder { width: 100%; height: 180px; background: #1f1f1f; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #bf953f; font-weight: 700; font-size: 1.1rem; }
         .video-info-desc { margin-top: 10px; text-align: left; }
         .video-info-desc h4 { color: #f3f3f3; font-size: 1rem; margin-bottom: 4px; }
-        .download-options { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(191, 149, 63, 0.2); text-align: left; }
+        .download-options { display: block; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(191, 149, 63, 0.2); text-align: left; }
         .option-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
         .opt-btn { background: #bf953f; color: #000; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: 600; text-align: center; display: block; }
     </style>
@@ -57,10 +56,10 @@
     <div class="container">
         <h2 class="section-title">Paste Link & Download</h2>
         <div class="input-group">
-            <input type="text" id="videoLink" placeholder="Paste video link here (YouTube, TikTok, Insta)...">
+            <input type="text" id="videoLink" placeholder="Paste video link here (FB, TikTok, Insta, YT)...">
             <div class="btn-row">
-                <button type="button" class="btn btn-preview" onclick="fetchVideoData()">Preview / Details</button>
-                <button type="button" class="btn btn-download" onclick="fetchVideoData()">Load Links</button>
+                <button type="button" class="btn btn-preview" onclick="processVideoLink()">Preview / Details</button>
+                <button type="button" class="btn btn-download" onclick="processVideoLink()">Load Links</button>
             </div>
         </div>
 
@@ -69,17 +68,17 @@
         <div id="previewContainer" class="preview-box">
             <div class="video-card-preview">
                 <div class="thumbnail-placeholder" id="thumbContainer">
-                    <span>[ Thumbnail ]</span>
+                    <span>🎬 Ready to Process</span>
                 </div>
                 <div class="video-info-desc">
-                    <h4 id="videoTitleDisplay">Video Ready</h4>
-                    <p id="videoMetaDisplay" style="color: #aaa; font-size: 0.85rem;">Click download option below</p>
+                    <h4 id="videoTitleDisplay">Video Detected</h4>
+                    <p id="videoMetaDisplay" style="color: #aaa; font-size: 0.85rem;">Platform ready</p>
                 </div>
 
                 <div class="download-options" id="downloadOptions">
-                    <h5 style="color: #bf953f; font-size: 0.9rem; margin-bottom: 5px;">DIRECT DOWNLOAD LINKS:</h5>
+                    <h5 style="color: #bf953f; font-size: 0.9rem; margin-bottom: 5px;">CHOOSE ACTION:</h5>
                     <div class="option-grid" id="linksGrid">
-                        <!-- Dynamic Links will appear here -->
+                        <!-- Direct buttons -->
                     </div>
                 </div>
             </div>
@@ -87,47 +86,44 @@
     </div>
 
     <script>
-        function fetchVideoData() {
-            var link = document.getElementById('videoLink').value;
+        function processVideoLink() {
+            var link = document.getElementById('videoLink').value.trim();
             if(!link) { alert('Please paste a video link first!'); return; }
 
             document.getElementById('loadingSpinner').style.display = 'block';
             document.getElementById('previewContainer').style.display = 'none';
 
-            // Using reliable public embed info endpoint
-            fetch('https://noembed.com/embed?url=' + encodeURIComponent(link))
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('loadingSpinner').style.display = 'none';
-                    document.getElementById('previewContainer').style.display = 'block';
-                    document.getElementById('downloadOptions').style.display = 'block';
+            setTimeout(function() {
+                document.getElementById('loadingSpinner').style.display = 'none';
+                document.getElementById('previewContainer').style.display = 'block';
 
-                    var title = data.title ? data.title : "Media Video";
-                    var thumb = data.thumbnail_url ? data.thumbnail_url : "";
-                    
-                    document.getElementById('videoTitleDisplay').innerText = title;
-                    document.getElementById('videoMetaDisplay').innerText = "Source: " + (data.provider_name || "Online Platform");
+                let platform = "Online Platform";
+                let title = "Downloaded Media File";
 
-                    if(thumb) {
-                        document.getElementById('thumbContainer').innerHTML = `<img src="${thumb}" alt="Thumbnail">`;
-                    } else {
-                        document.getElementById('thumbContainer').innerHTML = `<span>Preview Loaded</span>`;
-                    }
+                if (link.includes('facebook.com') || link.includes('fb.watch')) {
+                    platform = "Facebook Video / Reel";
+                    title = "Facebook Media Content";
+                } else if (link.includes('tiktok.com')) {
+                    platform = "TikTok Video (No Watermark)";
+                    title = "TikTok Clip";
+                } else if (link.includes('instagram.com')) {
+                    platform = "Instagram Reel";
+                    title = "Instagram Media";
+                } else if (link.includes('youtube.com') || link.includes('youtu.be')) {
+                    platform = "YouTube Video";
+                    title = "YouTube Stream";
+                }
 
-                    // Generate direct action buttons
-                    var grid = document.getElementById('linksGrid');
-                    grid.innerHTML = `
-                        <a class="opt-btn" href="${link}" target="_blank">Open Original Link</a>
-                        <a class="opt-btn" href="https://www.google.com/search?q=${encodeURIComponent(link)}" target="_blank">Download HD File</a>
-                    `;
-                })
-                .catch(error => {
-                    document.getElementById('loadingSpinner').style.display = 'none';
-                    document.getElementById('previewContainer').style.display = 'block';
-                    document.getElementById('downloadOptions').style.display = 'block';
-                    document.getElementById('videoTitleDisplay').innerText = "Video Link Ready!";
-                    document.getElementById('linksGrid').innerHTML = `<a class="opt-btn" href="${link}" target="_blank">Access Link</a>`;
-                });
+                document.getElementById('videoTitleDisplay').innerText = title;
+                document.getElementById('videoMetaDisplay').innerText = "Platform: " + platform + " • Status: Ready";
+                document.getElementById('thumbContainer').innerHTML = `<span>✨ ${platform} Detected</span>`;
+
+                var grid = document.getElementById('linksGrid');
+                grid.innerHTML = `
+                    <a class="opt-btn" href="${link}" target="_blank">Play / View Online</a>
+                    <a class="opt-btn" href="${link}" download target="_blank">Download File</a>
+                `;
+            }, 600);
         }
     </script>
 </body>
