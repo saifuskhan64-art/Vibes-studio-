@@ -17,16 +17,14 @@ def process_video():
         return jsonify({'error': 'URL is required'}), 400
     
     try:
-        # yt-dlp options to fetch video info without downloading it immediately
         ydl_opts = {
             'quiet': True,
             'no_warnings': True,
-            'extract_flat': False,
         }
         
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info_dict = ydl.extract_info(video_url, download=False)
-            title = info_dict.get('title', 'Downloaded Video')
+            title = info_dict.get('title', 'Vibes Studio Video')
             thumbnail = info_dict.get('thumbnail', '')
             uploader = info_dict.get('uploader', 'Social Media')
             
@@ -41,42 +39,22 @@ def process_video():
             'status': 'success',
             'title': 'Video Ready for Download',
             'thumbnail': '',
-            'provider_name': 'Social Media'
+            'provider_name': 'Vibes Studio'
         })
 
 @app.route('/download', methods=['GET'])
 def download_file():
     video_url = request.args.get('url')
-    quality = request.args.get('quality', 'HD')
-    
     if not video_url:
         return "URL is missing", 400
         
     try:
-        ydl_opts = {}
-        if quality == 'MP3':
-            ydl_opts = {
-                'format': 'bestaudio/best',
-                'postprocessors': [{
-                    'key': 'FFmpegExtractAudio',
-                    'preferredcodec': 'mp3',
-                    'preferredquality': '192',
-                }],
-            }
-        elif quality == 'SD':
-            ydl_opts = {'format': 'best[height<=480]'}
-        else: # HD
-            ydl_opts = {'format': 'best'}
-
+        # Direct clean extraction for quick user download link
+        ydl_opts = {'format': 'best'}
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info_dict = ydl.extract_info(video_url, download=True)
-            filename = ydl.prepare_filename(info_dict)
-            
-            if quality == 'MP3':
-                filename = os.path.splitext(filename)[0] + ".mp3"
-                
-            # Direct user to download or return file link
-            return redirect(video_url) # Fallback direct redirect or stream file
+            info_dict = ydl.extract_info(video_url, download=False)
+            direct_url = info_dict.get('url', video_url)
+            return redirect(direct_url)
     except Exception as e:
         return redirect(video_url)
 
