@@ -1,62 +1,62 @@
-from flask import Flask, render_template, request, jsonify, redirect
-import os
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 import yt_dlp
+import os
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return "Vibes Studio Backend is Running! 🚀"
 
-@app.route('/process-video', methods=['POST'])
-def process_video():
-    data = request.get_json()
-    video_url = data.get('url')
-    
-    if not video_url:
-        return jsonify({'error': 'URL is required'}), 400
-    
-    try:
-        ydl_opts = {
-            'quiet': True,
-            'no_warnings': True,
-        }
-        
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info_dict = ydl.extract_info(video_url, download=False)
-            title = info_dict.get('title', 'Vibes Studio Video')
-            thumbnail = info_dict.get('thumbnail', '')
-            uploader = info_dict.get('uploader', 'Social Media')
-            
-            return jsonify({
-                'status': 'success',
-                'title': title,
-                'thumbnail': thumbnail,
-                'provider_name': uploader
-            })
-    except Exception as e:
-        return jsonify({
-            'status': 'success',
-            'title': 'Video Ready for Download',
-            'thumbnail': '',
-            'provider_name': 'Vibes Studio'
-        })
-
-@app.route('/download', methods=['GET'])
-def download_file():
+@app.route('/api/download', methods=['GET'])
+def download_video():
     video_url = request.args.get('url')
     if not video_url:
-        return "URL is missing", 400
-        
+        return jsonify({"error": "URL missing"}), 400
+
+    # Yeh settings YouTube ke block ko bypass karne mein madad karti hain
+    ydl_opts = {
+        'format': 'best',
+        'quiet': True,
+        'no_warnings': True,
+        'noplaylist': True,
+        # YouTube ke liye Android client use karein (block bypass)
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'web'],
+                'player_skip': ['webpage', 'configs'],
+            }
+        },
+    }
+
+    # Agar aap cookies file use karna chahte hain (recommended)
+    # cookies_path = '/app/cookies.txt' # Railway par is path par upload karein
+    # if os.path.exists(cookies_path):
+    #     ydl_opts['cookiefile'] = cookies_path
+
     try:
-        # Direct clean extraction for quick user download link
-        ydl_opts = {'format': 'best'}
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info_dict = ydl.extract_info(video_url, download=False)
-            direct_url = info_dict.get('url', video_url)
-            return redirect(direct_url)
+            info = ydl.extract_info(video_url, download=False)
+            
+            video_link = info.get('url')
+            if not video_link and 'formats' in info:
+                for f in info['formats']:
+                    if f.get('ext') == 'mp4' and f.get('vcodec') != 'none':
+                        video_link = f['url']
+                        break
+            if not video_link:
+                 video_link = info.get('formats')[-1].get('url')
+
+            return jsonify({
+                "title": info.get('title', 'Video Detected'),
+                "thumbnail": info.get('thumbnail', ''),
+                "video": video_link,
+                "audio": video_link 
+            })
     except Exception as e:
-        return redirect(video_url)
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
