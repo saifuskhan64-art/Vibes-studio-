@@ -54,23 +54,61 @@
         </div>
     </div>
 
-    <script>
-        function redirectToDownloader() {
-            var link = document.getElementById('videoLink').value.trim();
-            if(!link) { 
-                alert('Please paste a valid video link first!'); 
-                return; 
-            }
+    <<script>
+    const API_URL = "https://vibes-studio-production.up.railway.app/api/download";
+    let downloadUrls = {};
 
-            // Encodes the user link safely and opens a reliable fast processing gateway
-            var encodedLink = encodeURIComponent(link);
-            
-            // This safely passes the link to a high-speed execution portal without burdening your server
-            var targetPortal = "https://www.google.com/search?q=" + encodedLink + "+downloader";
-            
-            // Open in a secure clean new tab
-            window.open(targetPortal, '_blank');
-        }
-    </script>
-</body>
-</html>
+    function fetchVideoData() {
+        const link = document.getElementById('videoLink').value.trim();
+        if (!link) { alert('Please paste a video link first!'); return; }
+
+        document.getElementById('loadingSpinner').style.display = 'block';
+        document.getElementById('previewContainer').style.display = 'none';
+
+        fetch(`${API_URL}?url=${encodeURIComponent(link)}`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('loadingSpinner').style.display = 'none';
+                if (data.error) { alert('Error: ' + data.error); return; }
+
+                document.getElementById('previewContainer').style.display = 'block';
+                document.getElementById('downloadOptions').style.display = 'block';
+
+                document.getElementById('videoTitleDisplay').innerText = data.title;
+                document.getElementById('videoMetaDisplay').innerText = "Ready to download";
+
+                if (data.thumbnail) {
+                    document.getElementById('thumbContainer').innerHTML = `<img src="${data.thumbnail}" alt="Thumbnail">`;
+                } else {
+                    document.getElementById('thumbContainer').innerHTML = `<span>[ No Thumbnail ]</span>`;
+                }
+
+                downloadUrls = { sd: data.video, hd: data.video, mp3: data.audio };
+            })
+            .catch(err => {
+                document.getElementById('loadingSpinner').style.display = 'none';
+                alert('Server se connect nahi ho paya. Railway link check karein.');
+            });
+    }
+
+    function downloadVideo(quality, btn) {
+        const url = downloadUrls[quality.toLowerCase()];
+        if (!url) { alert('Link missing. Try again.'); return; }
+
+        let timeLeft = 3;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = `Wait ${timeLeft}s...`;
+        btn.disabled = true;
+
+        const timer = setInterval(() => {
+            timeLeft--;
+            btn.innerHTML = `Wait ${timeLeft}s...`;
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                window.open(url, '_blank');
+            }
+        }, 1000);
+    }
+</script>
